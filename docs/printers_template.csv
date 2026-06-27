@@ -1,0 +1,7 @@
+﻿nome_stampante;ip;cartella_driver;file_inf;nome_driver;porta;modello;posizione;commento;abilitata
+Nome visualizzato in Windows;Indirizzo IP della stampante;Percorso cartella contenente il file .inf;Nome del file .inf del driver;Nome del driver come appare in Windows;Nome porta TCP/IP (lasciare vuoto = auto);Modello/descrizione (opzionale);Posizione (opzionale);Commento (opzionale);TRUE = includi, FALSE = salta
+HP LaserJet Pro M404n - Reception;192.168.10.50;\\server-it\drivers\HP\LaserJet_M404n;hpLJ_M404n.inf;HP LaserJet Pro M404-M405 PCL-6;;HP LaserJet Pro M404n;Piano Terra - Reception;Fronte verso il banco accoglienza;TRUE
+Canon iR-ADV C3520 - Ufficio Amministrazione;192.168.10.51;\\server-it\drivers\Canon\iRADV_C3520;CNMiRADV3520.inf;Canon iR-ADV C3520 UFR II;;Canon iR-ADV C3520;Primo Piano - Ufficio Amm.;Stampante multifunzione a colori;TRUE
+Epson WF-3725 - Sala Riunioni;192.168.10.52;C:\Drivers\Epson\WF3725;epWF3725.inf;Epson WF-3725 Series;IP_192_168_10_52;Epson WorkForce WF-3725;Secondo Piano - Sala Riunioni;;TRUE
+Kyocera ECOSYS M2135dn - Magazzino;192.168.10.53;\\server-it\drivers\Kyocera\M2135dn;KPDL_M2135dn.inf;Kyocera ECOSYS M2135dn KX;;Kyocera ECOSYS M2135dn;Piano Terra - Magazzino;Solo B/N - Uso interno;TRUE
+Ricoh MP C3004 - Direzione;192.168.10.54;\\server-it\drivers\Ricoh\MPC3004;RICOH_MPC3004.inf;RICOH MP C3004 PCL 6;;Ricoh MP C3004;Terzo Piano - Direzione;Accesso riservato - PIN richiesto;FALSE

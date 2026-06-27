@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STAMPA FIRE - Installazione batch di stampanti di rete</title>
+  <meta name="description" content="STAMPA FIRE: tool con interfaccia grafica per installare in batch stampanti di rete su Windows 10/11 da un semplice file Excel." />
+  <link rel="icon" href="logo.png" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg2: #1e293b;
+      --card: #ffffff;
+      --ink: #1e293b;
+      --muted: #64748b;
+      --brand: #2563eb;
+      --brand-dark: #1d4ed8;
+      --border: #e2e8f0;
+      --ok: #16a34a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background: #f8fafc;
+      line-height: 1.6;
+    }
+    a { color: var(--brand); }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%);
+      color: #f1f5f9;
+      padding: 72px 20px 64px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(37, 99, 235, .2);
+      color: #93c5fd;
+      border: 1px solid rgba(147, 197, 253, .4);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      margin: 0 0 6px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      perspective: 700px;
+    }
+    .subtitle {
+      max-width: 620px;
+      margin: 0 auto 18px;
+      font-size: .95rem;
+      color: #93c5fd;
+      font-style: italic;
+    }
+
+    /* Logo: entra al caricamento come un dado lanciato che rotola e si assesta */
+    .logo-dice {
+      transform-origin: center;
+      animation: logoDiceIn 1.5s cubic-bezier(.2, .75, .3, 1) both;
+    }
+    @keyframes logoDiceIn {
+      0% {
+        opacity: 0;
+        transform: translateX(-220%) translateY(-45%)
+                   rotateZ(-1080deg) rotateX(720deg) rotateY(540deg) scale(.25);
+      }
+      30% { opacity: 1; }
+      55% {
+        opacity: 1;
+        transform: translateX(0) translateY(0)
+                   rotateZ(22deg) rotateX(-32deg) rotateY(-22deg) scale(1.18);
+      }
+      72% {
+        transform: rotateZ(-10deg) rotateX(12deg) rotateY(8deg) scale(.95);
+      }
+      86% {
+        transform: rotateZ(4deg) scale(1.04);
+      }
+      100% {
+        opacity: 1;
+        transform: none;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .logo-dice { animation: none; }
+    }
+    .hero p.lead {
+      max-width: 640px;
+      margin: 0 auto 28px;
+      font-size: 1.12rem;
+      color: #cbd5e1;
+    }
+    .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform .08s ease, background .2s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--brand); color: #fff; }
+    .btn-primary:hover { background: var(--brand-dark); }
+    .btn-ghost { background: rgba(255,255,255,.08); color: #e2e8f0; border: 1px solid rgba(255,255,255,.2); }
+    .btn-ghost:hover { background: rgba(255,255,255,.16); }
+
+    /* Layout */
+    .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+    section { padding: 56px 0; }
+    h2 {
+      font-size: 1.6rem;
+      margin: 0 0 8px;
+      text-align: center;
+    }
+    .sub { text-align: center; color: var(--muted); margin: 0 auto 36px; max-width: 560px; }
+
+    /* Features */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+    }
+    .card .ico { font-size: 1.6rem; }
+    .card h3 { margin: 10px 0 6px; font-size: 1.08rem; }
+    .card p { margin: 0; color: var(--muted); font-size: .96rem; }
+
+    /* Steps */
+    .steps { background: #fff; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    ol.steps-list {
+      max-width: 640px; margin: 0 auto; padding-left: 22px;
+    }
+    ol.steps-list li { margin: 10px 0; }
+    code {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: .9em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    pre {
+      background: var(--bg);
+      color: #e2e8f0;
+      padding: 16px 18px;
+      border-radius: 12px;
+      overflow-x: auto;
+      max-width: 640px;
+      margin: 22px auto 0;
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    /* Guida */
+    #guida { scroll-margin-top: 12px; background: #fff; }
+    .guide h3 { font-size: 1.1rem; margin: 26px 0 8px; text-align: left; }
+    .guide ul, .guide ol { line-height: 1.8; }
+    .guide table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; font-size: .94rem; }
+    .guide th, .guide td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .guide th { background: #f1f5f9; font-weight: 700; }
+    .guide td code { white-space: nowrap; }
+    .note { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; border-radius: 10px; padding: 12px 16px; margin: 18px 0; font-size: .95rem; }
+    .dl { display: inline-block; margin: 8px 0; padding: 10px 18px; background: var(--brand); color: #fff; border-radius: 10px; text-decoration: none; font-weight: 600; }
+    .dl:hover { background: var(--brand-dark); }
+
+    /* Footer */
+    footer {
+      background: var(--bg);
+      color: #94a3b8;
+      padding: 40px 20px;
+      text-align: center;
+      font-size: .92rem;
+    }
+    footer a { color: #93c5fd; }
+    .disclaimer {
+      max-width: 620px;
+      margin: 0 auto 18px;
+      color: #cbd5e1;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: .9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <span class="badge">Versione 0.0.2</span>
+    <h1><img class="logo-dice" src="logo.png" alt="Logo STAMPA FIRE" style="height:1em;width:auto;vertical-align:-0.15em"> STAMPA FIRE</h1>
+    <p class="subtitle">Sysadmin Tools Against Malicious Printer Agon Force Inf Registration Engine</p>
+    <p class="lead">
+      L'estintore definitivo per il deployment delle stampanti. Mappa IP, driver e
+      posizioni in un <strong>file Excel</strong> e installa in batch le tue stampanti di
+      rete su Windows 10/11 con un click.
+    </p>
+    <div class="btns">
+      <a class="btn btn-primary" href="https://github.com/denvermotel/stampa-fire">Vai al repository</a>
+      <a class="btn btn-primary" href="#guida">Guida di utilizzo</a>
+      <a class="btn btn-ghost" href="printers_template.xlsx" download>Modello Excel</a>
+      <a class="btn btn-ghost" href="printers_template.csv" download>Modello CSV</a>
+      <a class="btn btn-ghost" href="https://raw.githubusercontent.com/denvermotel/stampa-fire/refs/heads/main/LICENSE">Licenza</a>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <h2>Cosa fa</h2>
+      <p class="sub">Un foglio Excel come unica fonte di verità: il tool esegue l'intero flusso di installazione per ogni stampante.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="ico">📊</div>
+          <h3>Configurazione da Excel</h3>
+          <p>Definisci nome, IP, cartella driver e file <code>.inf</code> in un foglio: niente comandi a mano.</p>
+        </div>
+        <div class="card">
+          <div class="ico">⚙️</div>
+          <h3>Installazione in batch</h3>
+          <p>Inietta il driver con <code>pnputil</code>, crea la porta TCP/IP e registra la stampante via PowerShell.</p>
+        </div>
+        <div class="card">
+          <div class="ico">📡</div>
+          <h3>Test di connessione</h3>
+          <p>Ping opzionale prima di ogni installazione: salta le macchine non raggiungibili.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🔍</div>
+          <h3>Rilevamento driver</h3>
+          <p>Se non indichi il nome del driver, viene letto automaticamente dal file <code>.inf</code>.</p>
+        </div>
+        <div class="card">
+          <div class="ico">📋</div>
+          <h3>Log con timestamp</h3>
+          <p>Ogni sessione produce un file di log dettagliato con l'esito di ogni stampante.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🛡️</div>
+          <h3>Elevazione UAC</h3>
+          <p>Rileva i privilegi di amministratore e propone l'elevazione automatica all'avvio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+<!--
+  <section class="steps">
+    <div class="wrap">
+      <h2>Avvio rapido</h2>
+      <p class="sub">Richiede Windows 10/11 e Python 3.9+.</p>
+      <ol class="steps-list">
+        <li>Installa le dipendenze: <code>pip install openpyxl pillow</code>.</li>
+        <li>Compila il file di configurazione (<a href="printers_template.xlsx" download>modello Excel</a> o <a href="printers_template.csv" download>modello CSV</a>).</li>
+        <li>Avvia con <code>run_stampa_fire.bat</code> oppure <code>python stampa_fire.py</code> e conferma l'elevazione UAC.</li>
+        <li>Seleziona le stampanti e premi <strong>Installa selezionate</strong>.</li>
+      </ol>
+      <pre>git clone https://github.com/denvermotel/stampa-fire.git
+cd stampa-fire
+pip install openpyxl pillow
+python stampa_fire.py</pre>
+    </div>
+  </section>
+-->
+  <section id="guida" class="guide">
+    <div class="wrap">
+      <h2>Guida di utilizzo</h2>
+      <p class="sub">Installa in batch le tue stampanti di rete partendo da un semplice file Excel.</p>
+
+      <h3>Requisiti</h3>
+      <p>Windows 10/11, Python 3.9+ e due moduli Python.</p>
+      <pre>pip install openpyxl pillow</pre>
+      <div class="note">
+        ⚠️ STAMPA FIRE richiede <strong>privilegi di amministratore</strong> per installare
+        driver e stampanti. All'avvio rileva i privilegi e, se necessario, propone
+        l'elevazione tramite UAC.
+      </div>
+
+      <h3>Avvio</h3>
+      <ul>
+        <li><strong>Launcher</strong>: doppio click su <code>run_stampa_fire.bat</code> (rileva Python, installa le dipendenze e avvia).</li>
+        <li><strong>Da terminale</strong>: <code>python stampa_fire.py</code>.</li>
+        <li><strong>Eseguibile</strong>: <code>StampaFire.exe</code> (build PyInstaller, UAC integrata).</li>
+      </ul>
+      <p>All'avvio il programma cerca automaticamente un file Excel nella propria cartella
+      (<code>printers.xlsx</code>, <code>printers_template.xlsx</code>, <code>stampanti.xlsx</code> o il primo <code>.xlsx</code> trovato).
+      È sempre possibile sceglierne un altro con il pulsante <strong>Sfoglia</strong> oppure importare un file <code>.csv</code>.</p>
+
+      <h3>Il file di configurazione (Excel o CSV)</h3>
+      <p>La prima riga è l'intestazione con i nomi delle colonne. Parti da uno dei modelli
+      pronti (stessi dati, formato a scelta) e modificalo con i tuoi dati:</p>
+      <a class="dl" href="printers_template.xlsx" download>⬇ Modello Excel (.xlsx)</a>
+      <a class="dl" href="printers_template.csv" download>⬇ Modello CSV (.csv)</a>
+
+      <h3>Colonne obbligatorie</h3>
+      <table>
+        <tr><th>Colonna</th><th>Descrizione</th></tr>
+        <tr><td><code>nome_stampante</code></td><td>Nome con cui la stampante apparirà in Windows.</td></tr>
+        <tr><td><code>ip</code></td><td>Indirizzo IP della stampante in rete.</td></tr>
+        <tr><td><code>cartella_driver</code></td><td>Cartella contenente il file <code>.inf</code> (percorso UNC o locale).</td></tr>
+        <tr><td><code>file_inf</code></td><td>Nome del file <code>.inf</code> del driver.</td></tr>
+      </table>
+
+      <h3>Colonne opzionali</h3>
+      <table>
+        <tr><th>Colonna</th><th>Descrizione</th><th>Default</th></tr>
+        <tr><td><code>nome_driver</code></td><td>Nome <strong>esatto</strong> del driver come da <code>.inf</code>.</td><td>auto-rilevato dal <code>.inf</code></td></tr>
+        <tr><td><code>porta</code></td><td>Nome della porta TCP/IP.</td><td><code>IP_xxx_xxx_xxx_xxx</code></td></tr>
+        <tr><td><code>modello</code></td><td>Descrizione del modello (usata anche come hint per il rilevamento driver).</td><td>-</td></tr>
+        <tr><td><code>posizione</code></td><td>Posizione (es. «Piano 2 - Ufficio Nord»).</td><td>-</td></tr>
+        <tr><td><code>commento</code></td><td>Nota aggiuntiva.</td><td>-</td></tr>
+        <tr><td><code>abilitata</code></td><td><code>FALSE</code>/<code>0</code>/<code>NO</code> pre-deseleziona la riga.</td><td><code>TRUE</code></td></tr>
+      </table>
+
+      <div class="note">
+        💡 <strong>Dove trovo il <code>nome_driver</code>?</strong> Deve corrispondere
+        <em>esattamente</em> alla stringa presente nel file <code>.inf</code>, visibile anche in
+        <em>Gestione dispositivi → Driver → Dettagli</em>. Se lasci la colonna vuota, STAMPA FIRE
+        prova a leggerlo automaticamente dal <code>.inf</code> (usando <code>modello</code> come
+        suggerimento, se presente).
+      </div>
+
+      <h3>Cosa fa per ogni stampante</h3>
+      <p>Selezionate le stampanti e premuto <strong>Installa selezionate</strong>, il flusso è:</p>
+      <ol>
+        <li><strong>Ping</strong> dell'IP (se l'opzione è attiva): se non raggiungibile, la stampante viene saltata.</li>
+        <li><strong>Verifica</strong> dell'esistenza del file <code>.inf</code>.</li>
+        <li><strong>pnputil</strong> <code>/add-driver</code>: installa il pacchetto driver.</li>
+        <li><strong>Add-PrinterPort</strong>: crea la porta TCP/IP (se non esiste già).</li>
+        <li><strong>Add-PrinterDriver</strong>: registra il driver in Windows (se non esiste già).</li>
+        <li><strong>Add-Printer</strong>: aggiunge la stampante (un eventuale omonimo viene prima rimosso e ricreato).</li>
+      </ol>
+      <p>Un codice di ritorno <code>3010</code> di <code>pnputil</code> indica che il
+      driver è installato ma richiede un riavvio: viene trattato come successo con un avviso.</p>
+
+      <h3>Stampanti installate ed export</h3>
+      <p>Dal pulsante <strong>Stampanti installate</strong> puoi visualizzare le stampanti di rete
+      già presenti nel sistema e disinstallarle (con scelta dell'ambito: solo stampante, anche
+      porta e/o driver). Da qui puoi anche <strong>esportare</strong> l'elenco in CSV/Excel per
+      reimportarlo su un altro PC: le colonne <code>cartella_driver</code> e <code>file_inf</code>
+      vengono lasciate vuote perché il percorso del driver non è ricavabile dal sistema e va
+      compilato manualmente prima del reimport.</p>
+
+      <h3>Log</h3>
+      <p>Ogni sessione di installazione genera un file in <code>logs/</code>
+      (<code>stampafire_AAAAMMGG_HHMMSS.log</code>). Dalla GUI, il pulsante
+      <strong>Apri file log</strong> apre l'ultimo log con il programma predefinito. Al termine
+      viene mostrato un riepilogo con l'esito di ogni stampante.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="disclaimer">
+      Il software è fornito «così com'è», senza garanzie. L'utente è l'unico
+      responsabile dell'uso che ne viene fatto. Sono richiesti privilegi di
+      amministratore per installare driver e stampanti.
+    </div>
+    <p>
+      Distribuito sotto licenza GPLv3 ·
+      <a href="https://github.com/denvermotel/stampa-fire">Repository</a> ·
+      <a href="https://raw.githubusercontent.com/denvermotel/stampa-fire/refs/heads/main/LICENSE">Licenza</a> ·
+      <a href="https://github.com/denvermotel/stampa-fire/blob/main/CHANGELOG.md">Changelog</a>
+    </p>
+    <p>Sviluppato da <a href="https://github.com/denvermotel">Giovanni Genna</a>.</p>
+  </footer>
+
+</body>
+</html>
